@@ -1,4 +1,4 @@
-image_name = leddzip/bash-pakcer-aws
+image_name = leddzip/bash-packer-aws
 env_prefix = $$(bash ./build-scripts/build-env-prefix.sh)
 debug_version = $$(bash ./build-scripts/build-version.sh debug)
 minor_version = $$(bash ./build-scripts/build-version.sh minor)

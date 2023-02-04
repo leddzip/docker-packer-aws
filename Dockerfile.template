@@ -21,13 +21,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install terraform dependency
-RUN #set -eux && \
-#    cd /opt && \
-#    wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O terraform.zip && \
-#    unzip terraform.zip && \
-#    rm terraform.zip && \
-#    mv terraform /usr/bin/terraform
+# Install packer dependency
+RUN set -eux && \
+    cd /opt && \
+    wget https://releases.hashicorp.com/packer/${INJECT_PACKER_VERSION}/packer_${INJECT_PACKER_VERSION}_linux_amd64.zip -O packer.zip && \
+    unzip packer.zip && \
+    rm packer.zip && \
+    mv packer /usr/bin/packer
 
 # Install AWS CLI v2
 RUN set -eux && \
