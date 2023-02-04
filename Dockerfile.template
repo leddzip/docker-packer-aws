@@ -1,0 +1,48 @@
+FROM ubuntu:$INJECT_UBUNTU_VERSION
+
+#ARG TERRAFORM_VERSION=$INJECT_TERRAFORM_VERSION
+ARG AWS_CLI_VERSION=$INJECT_AWS_CLI_VERSION
+
+# create target workdir
+RUN mkdir /workdir
+
+# Install base requirements
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install --no-install-recommends -y wget \
+                       unzip \
+                       git \
+                       ssh \
+                       ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install terraform dependency
+RUN #set -eux && \
+#    cd /opt && \
+#    wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O terraform.zip && \
+#    unzip terraform.zip && \
+#    rm terraform.zip && \
+#    mv terraform /usr/bin/terraform
+
+# Install AWS CLI v2
+RUN set -eux && \
+    mkdir /opt/aws && \
+    cd /opt/aws && \
+    wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip -O awscliv2.zip && \
+    unzip awscliv2.zip && \
+    ./aws/install -i /usr/local/aws-cli -b /usr/local/bin && \
+    rm -rf \
+        awscliv2.zip \
+        aws \
+        /usr/local/aws-cli/v2/*/dist/aws_completer \
+        /usr/local/aws-cli/v2/*/dist/awscli/data/ac.index \
+        /usr/local/aws-cli/v2/*/dist/awscli/examples
+
+WORKDIR /workdir
+CMD ["bash"]
+

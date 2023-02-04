@@ -1,0 +1,46 @@
+version: 2.1
+
+docker_context: &docker_context
+  context:
+#    - Leddzip Dockerhub
+
+develop_filter: &develop_filter
+  filters:
+    branches:
+      only: develop
+master_filter: &master_filter
+  filters:
+    branches:
+      only: master
+
+jobs:
+  build-and-push:
+    machine:
+#      image: ubuntu-2004:202107-02
+    parameters:
+      env:
+        type: string
+    steps:
+      - checkout
+      - run: |
+          export ENV_TARGET=<<parameters.env>>
+          make generate-dockerfile
+#          echo "$MY_CIRCLECI_DOCKERHUB_PASSWORD" | docker login --username $MY_CIRCLECI_DOCKERHUB_USERNAME --password-stdin
+          make docker-build
+          make docker-push
+
+workflows:
+  "Build develop":
+    jobs:
+      - build-and-push:
+          <<: *docker_context
+          <<: *develop_filter
+          env: dev
+  "Build production":
+    jobs:
+      - build-and-push:
+          <<: *docker_context
+          <<: *master_filter
+          env: prod
+
+
