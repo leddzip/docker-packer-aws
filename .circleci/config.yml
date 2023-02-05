@@ -31,11 +31,12 @@ jobs:
       - run: |
           make docker-push
 
-"Build production":
-  jobs:
-    - build-test-and-push:
-        <<: *docker_context
-        <<: *master_filter
-        env: prod
+workflows:
+  "Build production":
+    jobs:
+      - build-test-and-push:
+          <<: *docker_context
+          <<: *master_filter
+          env: prod
 
 
