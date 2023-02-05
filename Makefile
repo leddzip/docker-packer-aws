@@ -3,7 +3,6 @@ env_prefix = $$(bash ./build-scripts/build-env-prefix.sh)
 debug_version = $$(bash ./build-scripts/build-version.sh debug)
 minor_version = $$(bash ./build-scripts/build-version.sh minor)
 major_version = $$(bash ./build-scripts/build-version.sh major)
-project_version = $$(cat version | grep "version=" | cut -d= -f2)
 
 .ONESHELL:
 SHELL = /bin/bash
@@ -20,7 +19,6 @@ docker-build:
 		-t $(image_name):$(env_prefix)$(debug_version) \
 		-t $(image_name):$(env_prefix)$(minor_version) \
 		-t $(image_name):$(env_prefix)$(major_version) \
-		-t $(image_name):$(env_prefix)$(project_version) \
 		.
 
 .ONESHELL:

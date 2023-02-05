@@ -2,21 +2,17 @@ version: 2.1
 
 docker_context: &docker_context
   context:
-#    - Leddzip Dockerhub
+    - Leddzip Dockerhub
 
-develop_filter: &develop_filter
-  filters:
-    branches:
-      only: develop
 master_filter: &master_filter
   filters:
     branches:
       only: master
 
 jobs:
-  build-and-push:
+  build-test-and-push:
     machine:
-#      image: ubuntu-2004:202107-02
+      image: ubuntu-2204:2022.10.2
     parameters:
       env:
         type: string
@@ -25,20 +21,19 @@ jobs:
       - run: |
           export ENV_TARGET=<<parameters.env>>
           make generate-dockerfile
-#          echo "$MY_CIRCLECI_DOCKERHUB_PASSWORD" | docker login --username $MY_CIRCLECI_DOCKERHUB_USERNAME --password-stdin
+          echo "$MY_CIRCLECI_DOCKERHUB_PASSWORD" | docker login --username $MY_CIRCLECI_DOCKERHUB_USERNAME --password-stdin
           make docker-build
+      - run: |
+          docker run --rm -v $(pwd)/test:/workdir leddzip/bash-packer-aws:latest packer validate packer.json >> test_output.txt
+          cmp test_output.txt test/expected_output.txt
+          docker run --rm leddzip/bash-packer-aws:latest packer --version
+          docker run --rm leddzip/bash/packer-aws:latest aws --version
+      - run: |
           make docker-push
 
-workflows:
-  "Build develop":
-    jobs:
-      - build-and-push:
-          <<: *docker_context
-          <<: *develop_filter
-          env: dev
   "Build production":
     jobs:
-      - build-and-push:
+      - build-test-and-push:
           <<: *docker_context
           <<: *master_filter
           env: prod
