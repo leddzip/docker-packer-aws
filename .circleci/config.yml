@@ -25,7 +25,7 @@ jobs:
           make docker-build
       - run: |
           docker run --rm -v $(pwd)/test:/workdir leddzip/bash-packer-aws:latest packer validate packer.json >> test_output.txt
-          diff --strip-trailing-cr test_output.txt test/expected_output.txt
+          diff --ignore-trailing-space test_output.txt test/expected_output.txt
           docker run --rm leddzip/bash-packer-aws:latest packer --version
           docker run --rm leddzip/bash/packer-aws:latest aws --version
       - run: |
