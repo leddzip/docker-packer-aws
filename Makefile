@@ -29,4 +29,3 @@ docker-push:
 	docker push $(image_name):$(env_prefix)$(debug_version)
 	docker push $(image_name):$(env_prefix)$(minor_version)
 	docker push $(image_name):$(env_prefix)$(major_version)
-	docker push $(image_name):$(env_prefix)$(project_version)
